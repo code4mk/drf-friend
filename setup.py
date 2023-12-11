@@ -43,6 +43,7 @@ setup(
     description='A utility package for Django Rest Framework (DRF) that makes API development easier for developers.',
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
+    keywords=['django', 'drf', 'django-rest-framework', 'django-rest-api', 'drf_friend', 'code4mk'],
     
     # Package configuration
     packages=find_packages(exclude=['tests*']),
