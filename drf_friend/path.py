@@ -7,3 +7,6 @@ def base_path(*args):
   
 def modules_path(*args):
   return base_path('modules', *args)
+
+def mail_template_path(*args):
+  return base_path('template', 'mail', *args)
