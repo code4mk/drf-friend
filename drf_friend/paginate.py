@@ -3,10 +3,10 @@ from rest_framework.pagination import PageNumberPagination
 from collections import OrderedDict
 
 class LaravelStylePagination(PageNumberPagination):
-    page_size = 10  # Number of items per page
+    page_size = 10
     
     def get_paginated_response(self, data, wrap):
-        return Response(OrderedDict([
+        data =  (OrderedDict([
             ('per_page', self.page_size),
             ('current_page', self.page.number),
             ('last_page', self.page.paginator.num_pages),
@@ -17,12 +17,13 @@ class LaravelStylePagination(PageNumberPagination):
             ('to', self.page.end_index()),
             (wrap, data),
         ]))
+        return data
 
         
-def paginate_queryset(request, queryset, serializer_class, per_page=2, wrap='data'):
+def paginate(request, queryset, serializer_class, per_page=2, wrap='data'):
     # Create an instance of the custom pagination class
     paginator = LaravelStylePagination()
-    paginator.page_size = per_page  # Set the default number of items per page (adjust as needed)
+    paginator.page_size = per_page
 
     # Paginate the queryset
     page = paginator.paginate_queryset(queryset, request)
