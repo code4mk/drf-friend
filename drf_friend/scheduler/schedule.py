@@ -36,3 +36,6 @@ class Schedule(ScheduleCron):
         return self
 
 
+def bind_beat_schedule(schedules):
+    data = ScheduleConverter(schedules).convert()
+    return data
