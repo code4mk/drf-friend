@@ -10,7 +10,7 @@ class ScheduleConverter:
         for schedule in self.schedules:
             task_method =  schedule.task_data.get('task')
             name = schedule.name_data
-            last_part = str(schedule.schedule_cron)
+            last_part = schedule.schedule_cron
             task_method_name = task_method.__name__
             module_name = inspect.getmodule(task_method).__name__
             
