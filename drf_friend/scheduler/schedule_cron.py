@@ -1,5 +1,5 @@
 
-from celery.schedules import crontab
+from celery.schedules import crontab, timedelta
 
 class ScheduleCron:
     def __init__(self):
@@ -10,31 +10,31 @@ class ScheduleCron:
         return self
 
     def everySecond(self):
-        self.schedule_cron = crontab('* * * * *')
+        self.schedule_cron = timedelta(seconds=1)
         return self
 
     def everyTwoSeconds(self):
-        self.schedule_cron = crontab('*/2 * * * *')
+        self.schedule_cron = timedelta(seconds=2)
         return self
 
     def everyFiveSeconds(self):
-        self.schedule_cron = crontab('*/5 * * * *')
+        self.schedule_cron = timedelta(seconds=5)
         return self
 
     def everyTenSeconds(self):
-        self.schedule_cron = crontab('*/10 * * * *')
+        self.schedule_cron = timedelta(seconds=10)
         return self
 
     def everyFifteenSeconds(self):
-        self.schedule_cron = crontab('*/15 * * * *')
+        self.schedule_cron = timedelta(seconds=15)
         return self
 
     def everyTwentySeconds(self):
-        self.schedule_cron = crontab('*/20 * * * *')
+        self.schedule_cron = timedelta(seconds=20)
         return self
 
     def everyThirtySeconds(self):
-        self.schedule_cron = crontab('*/30 * * * *')
+        self.schedule_cron = timedelta(seconds=30)
         return self
 
     def everyMinute(self):
