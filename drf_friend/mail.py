@@ -15,7 +15,7 @@ def send_template_mail(subject, template_name, recipient_list, context=None):
     send_mail(
         subject=subject,
         message='',
-        from_email='hiremostafa@gmail.com',
+        from_email='hiremostafa@resend.com',
         recipient_list=recipient_list,
         html_message=email_body,
     )
@@ -28,3 +28,7 @@ def send_a_mail(title='', description='', mail_from='', mail_to=''):
     [mail_to],
     fail_silently=False,
   )
+  
+
+
+
