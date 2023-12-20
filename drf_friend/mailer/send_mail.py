@@ -1,4 +1,4 @@
-from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from email.mime.image import MIMEImage
 
@@ -119,9 +119,8 @@ class SendMail:
         Returns:
             SendMail: The current SendMail instance.
         """
-        text_body = render_to_string(f"{template_name}.txt", context)
-        html_body = render_to_string(f"{template_name}.html", context)
-        return self.text_body(text_body).html_body(html_body)
+        html_body = render_to_string(f"mail/{template_name}.html", context)
+        return self.html_body(html_body)
 
     def attach(self, file_paths):
         """
