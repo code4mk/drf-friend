@@ -36,7 +36,7 @@ def read(f):
 setup(
     # Package metadata
     name='drf-friend',
-    version='0.0.16',
+    version='0.0.17',
     url='https://drf-friend.code4mk.org/',
     author='Mostafa Kamal',
     author_email='hiremostafa@gmail.com',
@@ -50,8 +50,12 @@ setup(
     
     # Dependencies
     install_requires=[
-        # List your dependencies here
-        # For example, 'Django>=3.0' or 'djangorestframework>=3.12.0'
+        "redis",
+        "boto3",
+        "psycopg2-binary",
+        "django-rest-framework",
+        "python-dotenv",
+        "celery",
     ],
 
     # Classifiers
