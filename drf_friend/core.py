@@ -7,7 +7,13 @@ def bind_modules_app():
     the_modules_path = Path(modules_path()).resolve()
     
     # Initialize an empty list to store installed apps
-    INSTALLED_APPS = []
+    INSTALLED_APPS = [
+        # third party apps
+        'rest_framework',
+        'rest_framework.authtoken',
+        'celery',
+    ]
+    
     INSTALLED_APPS.append('drf_friend.project')
 
     # Loop through each module directory
