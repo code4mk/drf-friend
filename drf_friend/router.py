@@ -22,7 +22,7 @@ class Router:
     """
 
     @classmethod
-    def generate(cls, http_method, path, controller):
+    def generate(cls, http_method, path, controller, show_lists = False):
         """Generate a Django path definition string.
 
         Args:
@@ -39,8 +39,19 @@ class Router:
         path_split = path.split('/')
         path_name = '--'.join(path_split[:-1]) + path_split[-1].rstrip('/')
 
-        data = f"path('{path}', {class_name}.as_view({{'{http_method}': '{method_name}'}}), name='{module_name}_{path_name}')"
-        return data
+        route_lists = {
+            'method': http_method,
+            'path': f'{module_name}/{path}',
+            'view': f'{class_name}.{method_name}',
+            'name': f'{module_name}_{path_name}',
+            'module': module_name
+            }
+        the_path = f"path('{path}', {class_name}.as_view({{'{http_method}': '{method_name}'}}), name='{module_name}_{path_name}')"
+        data =  {
+            'route_lists': route_lists,
+            'path': the_path
+        }
+        return  data
 
     @classmethod
     def get(cls, path, controller):
@@ -131,4 +142,7 @@ class Route:
         Returns:
         list: A list of routes.
         """
-        return [route for route in self.routes]
+        return [route["path"] for route in self.routes]
+            
+    def show_lists(self):
+        return [route["route_lists"] for route in self.routes]
