@@ -1,12 +1,20 @@
 import os
 from collections import OrderedDict
+from drf_friend.path import base_path
+from drf_friend.env import getEnv
 
-def load_sql(module_name, sql_file):
-    # Construct the file path
-    file_path = os.path.join('modules', module_name, 'sql-queries', sql_file)
+def load_sql(sql_file, load_from_module = False):
+    if load_from_module == True:
+      components = sql_file.split('.')
+      path = base_path('modules', getEnv('RAW_SQL_MODULE_DIR', 'sql_quries'), *components)
+      path_with_extension = path + ".sql"
+    else:
+      components = sql_file.split('.')
+      path = base_path(getEnv('RAW_SQL_DIR', 'raw_sql'), *components)
+      path_with_extension = path + ".sql"
 
     # Open and read the SQL file
-    with open(file_path, 'r') as file:
+    with open(path_with_extension, 'r') as file:
         return file.read()
       
 def fetch_all_to_dictionary(cursor):
@@ -69,7 +77,7 @@ def raw_query_collection(request, results, wrap="data", type = 'paginate'):
     elif type == 'all':
         if paginated_results:
             to_index = from_index
-            response_data = OrderedDict([(wrap, paginated_results)])
+            response_data = OrderedDict([(wrap, results)])
         else:
             # If results list is empty, return an empty response
             response_data = OrderedDict([(wrap, [])])
