@@ -56,6 +56,8 @@ setup(
         "django-rest-framework",
         "python-dotenv",
         "celery",
+        "beautifulsoup4",
+        "premailer",
     ],
 
     # Classifiers

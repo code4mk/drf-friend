@@ -1,6 +1,7 @@
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from email.mime.image import MIMEImage
+from drf_friend.mailer.inline_css import inline_css
 
 class SendMail:
     """
@@ -119,7 +120,7 @@ class SendMail:
         Returns:
             SendMail: The current SendMail instance.
         """
-        html_body = render_to_string(f"mail/{template_name}.html", context)
+        html_body = inline_css(render_to_string(f"mail/{template_name}.html", context))
         return self.html_body(html_body)
 
     def attach(self, file_paths):
