@@ -30,3 +30,28 @@ class ProjectViewset(ViewSet):
           results = fetch_all_to_dictionary(cursor)
           output = raw_query_collection(request, results, 'api_logs')
       return Response(output)
+  
+  def get_installed_packages(self, request):
+    import pkg_resources
+    packages = pkg_resources.working_set
+    package_info = []
+
+    for package in packages:
+      package_name = package.key
+      installed_version = package.version
+  
+      package_info.append({
+        'project_name': package.project_name,
+        'name': package_name,
+        'version': installed_version,
+        'pypi_url': f'https://pypi.org/project/{package_name}/{installed_version}',
+        
+      })
+    
+    return Response(package_info)
+  
+  def get_system_environment(self, request):
+    from drf_friend.project.utils.system_environment import system_environment
+    a = system_environment()
+    return Response(a)
+        
