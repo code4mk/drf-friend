@@ -2,7 +2,7 @@ import os
 from collections import OrderedDict
 from drf_friend.path import base_path
 from drf_friend.env import getEnv
-
+    
 def load_sql(sql_file, load_from_module = False):
     if load_from_module == True:
       components = sql_file.split('.')
@@ -96,3 +96,8 @@ def raw_query_collection(request, results, wrap="data", type = 'paginate'):
         ])
 
     return response_data
+
+def exclude_fields(representation, fields_to_exclude):
+    for field in list(fields_to_exclude):
+        representation.pop(field, None)
+    return representation

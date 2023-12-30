@@ -36,7 +36,7 @@ def read(f):
 setup(
     # Package metadata
     name='drf-friend',
-    version='0.0.19',
+    version='0.0.20',
     url='https://drf-friend.code4mk.org/',
     author='Mostafa Kamal',
     author_email='hiremostafa@gmail.com',
