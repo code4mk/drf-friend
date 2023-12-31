@@ -41,3 +41,12 @@ class RawQuerySerializer(serializers.Serializer):
     def __init__(self, instance=None, data=None, **kwargs):
         super().__init__(instance=instance, data=data, **kwargs)
         self.generate_fields(data)
+        # print(self.get_fields())
+        print(self.get_meta())
+        
+    def get_meta(self):
+        # Check if the 'Meta' attribute exists in the class and has the 'info' attribute
+        if hasattr(self, 'Meta') and hasattr(self.Meta, 'fields'):
+            return self.Meta.fields
+        else:
+            return None
