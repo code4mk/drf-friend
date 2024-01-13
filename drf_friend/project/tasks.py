@@ -1,9 +1,8 @@
 from celery import shared_task
+from drf_friend.mailer.send_mail import SendMail
 
 @shared_task()
 def drf_mail(email_data):
-    print("task 2 is running")
-    from drf_friend.mailer.send_mail import SendMail
     mail = SendMail()
     mail.from_email(email_data['from'])
     mail.to(email_data['to'])
