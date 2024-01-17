@@ -1,7 +1,6 @@
 # celery_config.py
 
 from __future__ import absolute_import, unicode_literals
-from core.friend_scheduler import schedules
 from drf_friend.scheduler.schedule import bind_beat_schedule
 import os
 from celery import Celery
