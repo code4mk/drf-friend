@@ -15,6 +15,7 @@ def bind_modules_app():
     ]
     
     INSTALLED_APPS.append('drf_friend.project')
+    INSTALLED_APPS.append('drf_friend.cors')
 
     # Loop through each module directory
     for module_dir in the_modules_path.iterdir():
@@ -95,3 +96,12 @@ def show_modules_url():
 
     # Return the urlpatterns list
     return the_routes
+
+
+def initialize():
+    # add cors middleware
+    from drf_friend.cors.middleware import add_cors_middleware
+    add_cors_middleware()
+    
+
+

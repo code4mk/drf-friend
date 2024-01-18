@@ -10,3 +10,9 @@ def modules_path(*args):
 
 def mail_template_path(*args):
   return base_path('template', 'mail', *args)
+
+
+def base_module_name():
+    root_urlconf = settings.ROOT_URLCONF
+    base_module_name = root_urlconf.split('.')[0]
+    return base_module_name
