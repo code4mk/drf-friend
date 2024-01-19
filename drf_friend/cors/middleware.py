@@ -25,13 +25,6 @@ ACCESS_CONTROL_MAX_AGE = "access-control-max-age"
 ACCESS_CONTROL_REQUEST_PRIVATE_NETWORK = "access-control-request-private-network"
 ACCESS_CONTROL_ALLOW_PRIVATE_NETWORK = "access-control-allow-private-network"
 
-from django.conf import settings
-
-def add_cors_middleware():
-    # Add your CORS middleware at the beginning of the list
-    cors_middleware_class = 'drf_friend.cors.middleware.CorsMiddleware'
-    settings.MIDDLEWARE.insert(0, cors_middleware_class)
-
 
 class CorsMiddleware:
     sync_capable = True

@@ -97,11 +97,10 @@ def show_modules_url():
     # Return the urlpatterns list
     return the_routes
 
+from drf_friend.initialize import init_drf_friend
 
 def initialize():
-    # add cors middleware
-    from drf_friend.cors.middleware import add_cors_middleware
-    add_cors_middleware()
+    init_drf_friend()
     
 
 
