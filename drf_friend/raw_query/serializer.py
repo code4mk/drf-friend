@@ -16,6 +16,9 @@ class RawQuerySerializer(serializers.Serializer):
         the_fields = self.get_meta_fields() or list(data[0].keys())
 
         for the_field in the_fields:
+            if the_field not in list(data[0].keys()):
+                raise serializers.ValidationError(f"Field '{the_field}' is not present in the provided data.")
+
             if the_field not in the_get_fields and the_field not in meta_excepts:
                 # Determine the field type based on the data type in the first dictionary
                 field_type = serializers.CharField()
@@ -43,6 +46,11 @@ class RawQuerySerializer(serializers.Serializer):
         for the_get_field in the_get_fields:
             if the_get_field not in the_fields and the_get_field not in meta_excepts:
                 del self.fields[the_get_field]
+
+        # Check for fields in meta_excepts that are not in the data
+        for except_field in meta_excepts:
+            if except_field not in the_fields:
+                raise serializers.ValidationError(f"Field '{except_field}' is listed in meta_excepts but not present in the provided data.")
 
         return the_fields
 
