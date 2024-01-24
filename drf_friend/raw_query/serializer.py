@@ -6,20 +6,20 @@ from collections import OrderedDict
 class RawQuerySerializer(serializers.Serializer):
 
     def generate_fields(self, data):
-        the_get_fields = list(OrderedDict.fromkeys(self.get_fields()))  # ['id', 'is_active']
-        meta_excepts = self.get_meta_excepts()  # Get fields to be excluded from Meta
+        get_fields_ordered = list(OrderedDict.fromkeys(self.get_fields()))  # Fields specified in 'get_fields'
+        meta_excepts = self.get_meta_excepts()  # Fields to be excluded from Meta
 
         if not data:
             return []
 
         # Get the fields from the 'Meta' class or from the first data dictionary
-        the_fields = self.get_meta_fields() or list(data[0].keys())
+        model_fields = self.get_meta_fields() or list(data[0].keys())
 
-        for the_field in the_fields:
-            if the_field not in list(data[0].keys()):
-                raise serializers.ValidationError(f"Field '{the_field}' is not present in the provided data.")
+        for model_field in model_fields:
+            if model_field not in list(data[0].keys()):
+                raise serializers.ValidationError(f"Field '{model_field}' is not present in the provided data.")
 
-            if the_field not in the_get_fields and the_field not in meta_excepts:
+            if model_field not in get_fields_ordered and model_field not in meta_excepts:
                 # Determine the field type based on the data type in the first dictionary
                 field_type = serializers.CharField()
 
@@ -36,23 +36,23 @@ class RawQuerySerializer(serializers.Serializer):
                     # Add more mappings as needed
                 }
 
-                python_type = type(data[0][the_field])
+                python_type = type(data[0][model_field])
                 if python_type in type_mapping:
                     field_type = type_mapping[python_type]()
 
-                self.fields[the_field] = field_type
+                self.fields[model_field] = field_type
 
-        # Remove fields that are not in the_get_fields and not in meta_excepts
-        for the_get_field in the_get_fields:
-            if the_get_field not in the_fields and the_get_field not in meta_excepts:
-                del self.fields[the_get_field]
+        # Remove fields that are not in get_fields_ordered and not in meta_excepts
+        for get_field in get_fields_ordered:
+            if get_field not in model_fields and get_field not in meta_excepts:
+                del self.fields[get_field]
 
         # Check for fields in meta_excepts that are not in the data
         for except_field in meta_excepts:
-            if except_field not in the_fields:
+            if except_field not in model_fields:
                 raise serializers.ValidationError(f"Field '{except_field}' is listed in meta_excepts but not present in the provided data.")
 
-        return the_fields
+        return model_fields
 
     def __init__(self, instance=None, data=None, **kwargs):
         super().__init__(instance=instance, data=data, **kwargs)
@@ -71,3 +71,21 @@ class RawQuerySerializer(serializers.Serializer):
             return self.Meta.excepts
         else:
             return []
+
+    def the_update_fields(self, instance):
+        updated_values = {}
+        if hasattr(self, 'update_fields') and callable(getattr(self, 'update_fields', None)):
+            if instance is not None:
+                updated_fields = self.update_fields(getField=lambda field_name, default=None: instance.get(field_name, default))
+                for field, updated_value in OrderedDict(updated_fields).items():
+                    updated_values[field] = updated_value
+        return updated_values
+
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        updated_fields = self.the_update_fields(instance)
+        
+        for field, value in OrderedDict(updated_fields).items():
+            representation[field] = value
+        return representation
