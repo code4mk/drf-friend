@@ -16,8 +16,8 @@ class RawQuerySerializer(serializers.Serializer):
         model_fields = self.get_meta_fields() or list(data[0].keys())
 
         for model_field in model_fields:
-            if model_field not in list(data[0].keys()):
-                raise serializers.ValidationError(f"Field '{model_field}' is not present in the provided data.")
+            # if model_field not in list(data[0].keys()):
+            #     raise serializers.ValidationError(f"Field '{model_field}' is not present in the provided data.")
 
             if model_field not in get_fields_ordered and model_field not in meta_excepts:
                 # Determine the field type based on the data type in the first dictionary
