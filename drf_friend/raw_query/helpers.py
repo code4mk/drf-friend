@@ -22,7 +22,7 @@ def fetch_all_to_dictionary(cursor):
     return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 
-def raw_query_collection(request, results, wrap="data", type = 'paginate'):
+def raw_query_collection(request, results, wrap="data", type='paginate', serializer_class=None):
     """
     Paginate a raw query result and construct a Laravel-style response.
 
@@ -46,7 +46,7 @@ def raw_query_collection(request, results, wrap="data", type = 'paginate'):
     # Calculate indices for the range of items to be displayed on the current page
     from_index = (page - 1) * per_page + 1
     to_index = min(page * per_page, len(results))
-    
+
     # Calculate start and end indices for slicing the paginated results
     start_index = (page - 1) * per_page
     end_index = page * per_page
@@ -66,26 +66,35 @@ def raw_query_collection(request, results, wrap="data", type = 'paginate'):
     next_page_url = f"{base_url}?page={next_page}&per_page={per_page}" if next_page else None
     prev_page_url = f"{base_url}?page={prev_page}&per_page={per_page}" if prev_page else None
 
+    if serializer_class:
+        # Serialize the paginated results using the provided serializer class
+        the_serializer = serializer_class(data=paginated_results, many=True)
+        the_serializer.is_valid()
+        
+        serialized_results = the_serializer.data
+    else:
+        serialized_results = paginated_results
+
     if type == 'single':
         # If a single result is expected, handle the case where the results list is empty
         if paginated_results:
             to_index = from_index
-            response_data = OrderedDict([(wrap, paginated_results[0])])
+            response_data = OrderedDict([(wrap, serialized_results[0])])
         else:
             # If results list is empty, return an empty response
             response_data = OrderedDict([(wrap, {})])
     elif type == 'all':
         if paginated_results:
             to_index = from_index
-            response_data = OrderedDict([(wrap, results)])
+            response_data = OrderedDict([(wrap, serialized_results)])
         else:
             # If results list is empty, return an empty response
             response_data = OrderedDict([(wrap, [])])
     else:
         # Construct Laravel-style response with pagination information
         response_data = OrderedDict([
-            (wrap, paginated_results),
-            ('per_page', len(paginated_results)),
+            (wrap, serialized_results),
+            ('per_page', len(serialized_results)),
             ('current_page', page),
             ('last_page', total_pages),
             ('next_page_url', next_page_url),
