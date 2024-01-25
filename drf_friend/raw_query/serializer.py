@@ -6,7 +6,7 @@ from collections import OrderedDict
 class RawQuerySerializer(serializers.Serializer):
     def generate_fields(self, data):
         get_fields_ordered = list(OrderedDict.fromkeys(self.get_fields()))  # Fields specified in 'get_fields'
-        meta_excepts = self.get_meta_excepts()  # Fields to be excluded from Meta
+        meta_exclude = self.get_meta_exclude()  # Fields to be excluded from Meta
 
         if not data:
             return []
@@ -18,7 +18,7 @@ class RawQuerySerializer(serializers.Serializer):
             # if model_field not in list(data[0].keys()):
             #     raise serializers.ValidationError(f"Field '{model_field}' is not present in the provided data.")
 
-            if model_field not in get_fields_ordered and model_field not in meta_excepts:
+            if model_field not in get_fields_ordered and model_field not in meta_exclude:
                 # Determine the field type based on the data type in the first dictionary
                 field_type = serializers.CharField()
 
@@ -41,15 +41,15 @@ class RawQuerySerializer(serializers.Serializer):
 
                 self.fields[model_field] = field_type
                 
-        # Remove fields that are not in get_fields_ordered and not in meta_excepts
+        # Remove fields that are not in get_fields_ordered and not in meta_exclude
         for get_field in get_fields_ordered:
-            if get_field not in model_fields and get_field not in meta_excepts:
+            if get_field not in model_fields and get_field not in meta_exclude:
                 del self.fields[get_field]
 
-        # Check for fields in meta_excepts that are not in the data
-        for except_field in meta_excepts:
+        # Check for fields in meta_exclude that are not in the data
+        for except_field in meta_exclude:
             if except_field not in model_fields:
-                raise serializers.ValidationError(f"Field '{except_field}' is listed in meta_excepts but not present in the provided data.")
+                raise serializers.ValidationError(f"Field '{except_field}' is listed in meta_exclude but not present in the provided data.")
 
         return model_fields
 
@@ -64,10 +64,10 @@ class RawQuerySerializer(serializers.Serializer):
         else:
             return None
 
-    def get_meta_excepts(self):
-        # Check if the 'Meta' attribute exists in the class and has the 'excepts' attribute
-        if hasattr(self, 'Meta') and hasattr(self.Meta, 'excepts'):
-            return self.Meta.excepts
+    def get_meta_exclude(self):
+        # Check if the 'Meta' attribute exists in the class and has the 'exclude' attribute
+        if hasattr(self, 'Meta') and hasattr(self.Meta, 'exclude'):
+            return self.Meta.exclude
         else:
             return []
 
