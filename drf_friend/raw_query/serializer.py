@@ -4,7 +4,6 @@ from datetime import datetime
 from collections import OrderedDict
 
 class RawQuerySerializer(serializers.Serializer):
-
     def generate_fields(self, data):
         get_fields_ordered = list(OrderedDict.fromkeys(self.get_fields()))  # Fields specified in 'get_fields'
         meta_excepts = self.get_meta_excepts()  # Fields to be excluded from Meta
@@ -41,7 +40,7 @@ class RawQuerySerializer(serializers.Serializer):
                     field_type = type_mapping[python_type]()
 
                 self.fields[model_field] = field_type
-
+                
         # Remove fields that are not in get_fields_ordered and not in meta_excepts
         for get_field in get_fields_ordered:
             if get_field not in model_fields and get_field not in meta_excepts:
@@ -80,12 +79,25 @@ class RawQuerySerializer(serializers.Serializer):
                 for field, updated_value in OrderedDict(updated_fields).items():
                     updated_values[field] = updated_value
         return updated_values
-
-
+    
+    def the_bind_relations(self, instance):
+        updated_values = {}
+        if hasattr(self, 'bind_relations') and callable(getattr(self, 'bind_relations', None)):
+            if instance is not None:
+                updated_fields = self.bind_relations(getField=lambda field_name, default=None: instance.get(field_name, default))
+                for field, updated_value in OrderedDict(updated_fields).items():
+                    updated_values[field] = updated_value
+        return updated_values
+    
+    
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         updated_fields = self.the_update_fields(instance)
         
         for field, value in OrderedDict(updated_fields).items():
             representation[field] = value
+            
+        for field, value in OrderedDict(self.the_bind_relations(instance)).items():
+            representation[field] = value
+            
         return representation
