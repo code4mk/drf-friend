@@ -5,8 +5,8 @@ from drf_friend.env import getEnv
 # Retrieve environment variables
 aws_access_key_id = getEnv('AWS_ACCESS_KEY_ID')
 aws_secret_access_key = getEnv('AWS_SECRET_ACCESS_KEY')
-aws_region = getEnv('AWS_REGION')
-bucket_name = getEnv('BUCKET_NAME')
+aws_region = getEnv('S3_AWS_REGION')
+bucket_name = getEnv('S3_BUCKET_NAME')
 
 class S3Storage:
     def __init__(self):
