@@ -6,12 +6,14 @@ class Storage:
         self.disk = disk
         self.local_storage = LocalStorage()
         self.s3_storage = None
+        self.set_disk(disk)
+        
 
-    def disk(self, storage_type):
-        self.disk = storage_type
-
+    def set_disk(self, storage_type):
         if self.disk == 's3':
-            self.s3_storage = S3Storage('your-s3-bucket')
+            self.s3_storage = S3Storage()
+        else:
+            self.disk = storage_type
 
     def put(self, path, contents):
         if self.disk == 'local':

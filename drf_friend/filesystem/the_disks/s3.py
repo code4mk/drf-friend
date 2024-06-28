@@ -1,10 +1,22 @@
 import boto3
 from botocore.exceptions import ClientError
+from drf_friend.env import getEnv
+
+# Retrieve environment variables
+aws_access_key_id = getEnv('AWS_ACCESS_KEY_ID')
+aws_secret_access_key = getEnv('AWS_SECRET_ACCESS_KEY')
+aws_region = getEnv('AWS_REGION')
+bucket_name = getEnv('BUCKET_NAME')
 
 class S3Storage:
-    def __init__(self, s3_bucket):
-        self.s3_bucket = s3_bucket
-        self.s3_client = boto3.client('s3')
+    def __init__(self):
+        self.s3_bucket = bucket_name
+        self.s3_client = boto3.client(
+            's3',
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+            region_name=aws_region
+        )
 
     def put(self, path, contents):
         try:
